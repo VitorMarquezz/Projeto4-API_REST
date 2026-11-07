@@ -1,3 +1,5 @@
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./docs/swagger.js";
 import express from "express";
 import mongoose from "mongoose";
 import conectaNaDatabase from "./config/dbConnect.js";
@@ -14,6 +16,7 @@ conexao.once("open", () => {
 });
 
 const app = express();
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 routes(app);
 
 // Middleware de erro: o Express reconhece pelos 4 parâmetros.
