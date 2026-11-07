@@ -3,17 +3,39 @@
 API que fiz para estudar back-end com Node.js. Ela cadastra livros e autores
 num banco MongoDB e permite buscar livros por editora.
 
-Comecei este projeto acompanhando um curso de Node.js. Depois voltei nele
-para corrigir coisas que ficaram mal resolvidas: a API respondia erro 500
-para qualquer problema, inclusive quando o erro era de quem fez o pedido,
-e respondia 200 mesmo quando o livro não existia. Hoje todos os erros
-passam por um middleware só, que devolve o status certo para cada caso.
+**Teste online:** https://api-livraria-oy03.onrender.com/docs/
+
+A API está no plano gratuito do Render, que desliga o servidor quando ninguém
+usa. Por isso, a primeira requisição pode levar até 1 minuto. Depois disso,
+responde normalmente.
+
+## Como testar
+
+O link acima abre a documentação feita com Swagger. Lá aparecem todas as
+rotas e dá para testar cada uma pelo navegador: clique numa rota, depois em
+**Try it out** e em **Execute**.
+
+Um bom caminho para começar:
+
+1. `GET /livros` para ver os livros cadastrados
+2. `POST /autores` para cadastrar um autor (copie o `_id` da resposta)
+3. `POST /livros` usando esse `_id` no campo `autor`
+
+## Sobre o projeto
+
+Comecei acompanhando um curso de Node.js e depois voltei para corrigir o que
+ficou mal resolvido. A API respondia erro 500 para qualquer problema, inclusive
+quando o erro era de quem fez o pedido, e respondia 200 mesmo quando o livro
+não existia. Hoje todos os erros passam por um middleware só, que devolve o
+status certo para cada caso. Também documentei as rotas com Swagger e publiquei
+no Render.
 
 ## Tecnologias
 
-Node.js, Express, MongoDB e Mongoose.
+Node.js, Express, MongoDB, Mongoose e Swagger. Deploy no Render, com o banco
+no MongoDB Atlas.
 
-## Rodando o projeto
+## Rodando no seu computador
 
 ```bash
 npm install
@@ -26,7 +48,8 @@ conexão do MongoDB. Depois:
 npm run dev
 ```
 
-A API sobe em `http://localhost:8000`.
+A API sobe em `http://localhost:8000` e a documentação em
+`http://localhost:8000/docs`.
 
 ## Rotas
 
@@ -44,21 +67,12 @@ A API sobe em `http://localhost:8000`.
 | PUT | `/autores/:id` | Atualiza um autor |
 | DELETE | `/autores/:id` | Remove um autor |
 
-Para cadastrar um livro, o autor precisa existir antes. O campo `autor`
-recebe o id dele:
-
-```json
-{
-  "titulo": "Dom Casmurro",
-  "editora": "Ática",
-  "preco": 30,
-  "paginas": 256,
-  "autor": "id_do_autor"
-}
-```
-
 ## Erros
 
 - `400`: id em formato inválido ou faltando um campo obrigatório
 - `404`: livro ou autor não encontrado
 - `500`: erro no servidor
+
+## O que eu quero fazer depois
+
+- Paginação
