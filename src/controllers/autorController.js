@@ -1,60 +1,61 @@
 import { autor } from "../models/Autor.js";
 
 class AutorController {
-
-  static async listarAutores(req, res) {
+  static async listarAutores(req, res, next) {
     try {
       const listaAutores = await autor.find({});
       res.status(200).json(listaAutores);
     } catch (erro) {
-      res
-        .status(500)
-        .json({ message: `${erro.message} - falha na requisição` });
+      next(erro);
     }
   }
 
-  static async listarAutorPorId(req, res) {
+  static async listarAutorPorId(req, res, next) {
     try {
-      const id = req.params.id;
-      const livroEncontrado = await autor.findById(id);
-      res.status(200).json(livroEncontrado);
+      const autorEncontrado = await autor.findById(req.params.id);
+      if (!autorEncontrado) {
+        return res.status(404).json({ message: "Autor não encontrado" });
+      }
+      res.status(200).json(autorEncontrado);
     } catch (erro) {
-      res
-        .status(500)
-        .json({ message: `${erro.message} - falha na requisição do livro` });
+      next(erro);
     }
   }
 
-  static async cadastrarAutor(req, res) {
+  static async cadastrarAutor(req, res, next) {
     try {
-      const novoLivro = await autor.create(req.body);
-      res.status(201).json({ message: "criado com sucesso", livro: novoLivro });
+      const novoAutor = await autor.create(req.body);
+      res.status(201).json(novoAutor);
     } catch (erro) {
-      res
-        .status(500)
-        .json({ message: `${erro.message} - falha ao cadastrar livro` });
+      next(erro);
     }
   }
 
-  static async atualizarAutor(req, res) {
+  static async atualizarAutor(req, res, next) {
     try {
-      const id = req.params.id;
-      await autor.findByIdAndUpdate(id, req.body);
-      res.status(200).json({ message: "livro atualizado" });
+      const autorAtualizado = await autor.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true, runValidators: true }
+      );
+      if (!autorAtualizado) {
+        return res.status(404).json({ message: "Autor não encontrado" });
+      }
+      res.status(200).json(autorAtualizado);
     } catch (erro) {
-      res
-        .status(500)
-        .json({ message: `${erro.message} - falha na atualização` });
+      next(erro);
     }
   }
 
-  static async deletarAutor(req, res) {
+  static async deletarAutor(req, res, next) {
     try {
-      const id = req.params.id;
-      await autor.findByIdAndDelete(id);
-      res.status(200).json({ message: "livro deletado" });
+      const autorDeletado = await autor.findByIdAndDelete(req.params.id);
+      if (!autorDeletado) {
+        return res.status(404).json({ message: "Autor não encontrado" });
+      }
+      res.status(204).send();
     } catch (erro) {
-      res.status(500).json({ message: `${erro.message} - falha ao deletar` });
+      next(erro);
     }
   }
 }
